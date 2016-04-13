@@ -15,8 +15,8 @@ class DefaultController extends Controller
     public function indexAction()
     {
         $data = array(
-            'count' => $this->get('app.service.certificationy')->count(),
-            'categories' => $this->get('app.service.certificationy')->getCategories(),
+            'count' => $this->get('core.service.certificationy')->count(),
+            'categories' => $this->get('core.service.certificationy')->getCategories(),
         );
 
         return $this->render('AppBundle:Default:index.html.twig', $data);
@@ -28,7 +28,7 @@ class DefaultController extends Controller
      */
     public function launchAction(Request $request)
     {
-        $data['test'] = $this->get('app.service.certificationy')->launch(
+        $data['test'] = $this->get('core.service.certificationy')->launch(
             $request->request->get('number', 20),
             $request->request->get('categories', [])
         );

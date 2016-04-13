@@ -1,0 +1,24 @@
+parameters:
+    # form types
+    core.form.type.test.class: CoreBundle\Form\TestType
+    # form handlers
+    core.form.handler.abstract.class: CoreBundle\Form\Handler\AbstractFormHandler
+    core.form.handler.test.class: CoreBundle\Form\Handler\TestHandler
+    # entity classes
+    core.entity.test.class: CoreBundle:Test
+    # repository classes
+    core.repository.abstract.class: CoreBundle\Entity\Repository\AbstractRepository
+    core.repository.test.class: CoreBundle\Entity\Repository\TestRepository
+services:
+    # repository as services
+    core.repository.abstract:
+        class: %core.repository.abstract.class%
+        abstract: true
+        factory: ["@doctrine.orm.default_entity_manager", "getRepository"]
+    core.repository.test:
+        class: %core.repository.test.class%
+        parent: core.repository.abstract
+        arguments:
+            - %core.entity.test.class%
+    core.service.certificationy:
+      class: CoreBundle\Service\Certificationy\Client

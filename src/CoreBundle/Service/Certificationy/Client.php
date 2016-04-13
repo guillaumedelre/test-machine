@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\Certificationy;
+namespace CoreBundle\Service\Certificationy;
 
 
 use Certificationy\Certification\Loader;
