@@ -1,0 +1,10 @@
+body {
+    min-height: 2000px;
+    padding-top: 70px;
+}
+
+.navbar-brand {
+    background: url('../img/Lab-logo-blk.jpg') no-repeat left center;
+    background-size: 60px;
+    padding-left: 60px;
+}
