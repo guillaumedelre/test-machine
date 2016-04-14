@@ -1,0 +1,28 @@
+{% extends "@Admin/layout.html.twig" %}
+
+{% block content %}
+    {{ parent() }}
+
+    <ol class="breadcrumb">
+        <li><a href="{{ url('admin_default_index') }}">Administration</a></li>
+        <li><a href="{{ url('admin_test_index') }}">Tests</a></li>
+        <li class="active">Création d'un test</li>
+    </ol>
+
+    {{ include("AdminBundle:Test:form.html.twig") }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(function(){
+            $('#test_nbMinutes').bind('change, mousemove', function(event) {
+                $(this).parent().find('label').html('Temps (en minutes) ' + $(this).val());
+            });
+            $('#test_nbQuestion').bind('change, mousemove', function(event) {
+                $(this).parent().find('label').html('Nombre de questions ' + $(this).val());
+            });
+        })
+    </script>
+{% endblock %}

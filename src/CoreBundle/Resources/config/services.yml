@@ -1,21 +1,28 @@
 parameters:
+
     # form types
     core.form.type.category.class: CoreBundle\Form\CategoryType
     core.form.type.test.class: CoreBundle\Form\TestType
+
     # form handlers
     core.form.handler.abstract.class: CoreBundle\Form\Handler\AbstractFormHandler
     core.form.handler.category.class: CoreBundle\Form\Handler\CategoryHandler
     core.form.handler.test.class: CoreBundle\Form\Handler\TestHandler
+
     # entity classes
     core.entity.category.class: CoreBundle:Category
     core.entity.test.class: CoreBundle:Test
+
     # repository classes
     core.repository.abstract.class: CoreBundle\Entity\Repository\AbstractRepository
     core.repository.category.class: CoreBundle\Entity\Repository\CategoryRepository
     core.repository.test.class: CoreBundle\Entity\Repository\TestRepository
+
 services:
+
     core.service.certificationy:
         class: CoreBundle\Service\Certificationy\Client
+
     # repository as services
     core.repository.abstract:
         class: "%core.repository.abstract.class%"
@@ -31,6 +38,7 @@ services:
         parent: core.repository.abstract
         arguments:
             - "%core.entity.test.class%"
+
     # form handler as services
     core.form.handler.abstract:
         class: "%core.form.handler.abstract.class%"

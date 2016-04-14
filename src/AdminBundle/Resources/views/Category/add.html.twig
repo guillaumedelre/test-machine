@@ -1,0 +1,13 @@
+{% extends "@Admin/layout.html.twig" %}
+
+{% block content %}
+    {{ parent() }}
+
+    <ol class="breadcrumb">
+        <li><a href="{{ url('admin_default_index') }}">Administration</a></li>
+        <li><a href="{{ url('admin_category_index') }}">Catégories</a></li>
+        <li class="active">Création d'une catégorie</li>
+    </ol>
+
+    {{ include("AdminBundle:Category:form.html.twig") }}
+{% endblock %}

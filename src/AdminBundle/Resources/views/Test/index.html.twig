@@ -1,0 +1,40 @@
+{% extends "@Admin/layout.html.twig" %}
+
+{% block content %}
+    {{ parent() }}
+
+    <ol class="breadcrumb">
+        <li class="active">Administration</li>
+        <li class="active">Tests</li>
+    </ol>
+
+    <div class="text-right">
+        <a href="{{ url('admin_test_add') }}" class="btn btn-success">
+            <i class="glyphicon glyphicon-plus"></i> Nouveau test
+        </a>
+    </div>
+
+    {{ include("AdminBundle:Test:table.html.twig") }}
+    {{ include("AdminBundle:Test:pagination.html.twig") }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+<script>
+    $(function(){
+        $('.delete-link').bind('click', function(event){
+            event.preventDefault();
+            if (confirm("Etes vous sûr de vouloir supprimer ?")) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+        $('#test_nbMinutes').bind('change, mousemove', function(event) {
+            $(this).parent().find('label').html('Temps (en minutes) ' + $(this).val());
+        });
+        $('#test_nbQuestion').bind('change, mousemove', function(event) {
+            $(this).parent().find('label').html('Nombre de questions ' + $(this).val());
+        });
+        $('[data-toggle=tooltip]').tooltip();
+    })
+</script>
+{% endblock %}

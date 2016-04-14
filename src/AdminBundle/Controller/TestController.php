@@ -1,17 +1,17 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AdminBundle\Controller;
 
 use CoreBundle\Entity\AbstractEntity;
 use CoreBundle\Entity\Test;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
-class AdminController extends Controller
+class TestController extends Controller
 {
     /**
-     * @Route("/admin/", name="app_admin_index")
+     * @Route("/test", name="admin_test_index")
      */
     public function indexAction(Request $request)
     {
@@ -25,11 +25,11 @@ class AdminController extends Controller
             'tests'      => $this->get('core.repository.test')->findBy([], ['createdAt' => 'DESC'], $limit, $offset * $limit),
         );
 
-        return $this->render('AppBundle:Default:index.html.twig', $data);
+        return $this->render('AdminBundle:Test:index.html.twig', $data);
     }
 
     /**
-     * @Route("/admin/tests/add", name="app_admin_add")
+     * @Route("/test/add", name="admin_test_add")
      */
     public function addAction(Request $request)
     {
@@ -51,53 +51,57 @@ class AdminController extends Controller
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
 
-            return $this->redirectToRoute('app_admin_index');
+            return $this->redirectToRoute('admin_test_index');
         }
 
         $data = array(
             'form'       => $this->get('core.form.handler.test')->getForm()->createView(),
         );
 
-        return $this->render('AppBundle:Default:add.html.twig', $data);
+        return $this->render('AdminBundle:Test:add.html.twig', $data);
     }
 
     /**
-     * @Route("/admin/tests/{id}/edit", name="app_admin_edit")
+     * @Route("/test/{id}/edit", name="admin_test_edit")
      */
     public function editAction(Request $request, $id)
     {
         /** @var Test $entity */
         $entity = $this->get('core.repository.test')->find($id);
+
         if (null !== $entity) {
             $this->get('core.form.handler.test')->buildForm($entity);
             if ('POST' === $request->getMethod()) {
                 try {
                     $this->get('core.form.handler.test')->process($request, $entity);
                     $this->get('session')->getFlashBag()->add('success', 'Le test a bien été enregistré.');
-                    return $this->redirectToRoute('app_admin_index');
+                    return $this->redirectToRoute('admin_test_index');
                 } catch (\Exception $e) {
                     $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-                    return $this->redirectToRoute('app_admin_edit', ['id' => $id]);
+                    return $this->redirectToRoute('admin_test_edit', ['id' => $id]);
                 }
             }
         } else {
-            $this->get('session')->getFlashBag()->add('danger', "Article #$id introuvable.");
-            return $this->redirectToRoute('app_admin_index');
+            $this->get('session')->getFlashBag()->add('danger', "Test #$id introuvable.");
+            return $this->redirectToRoute('admin_test_index');
         }
+
         $data = array(
             "test" => $entity,
             "form" => $this->get('core.form.handler.test')->getForm()->createView(),
         );
-        return $this->render('AppBundle:Default:edit.html.twig', $data);
+
+        return $this->render('AdminBundle:Test:edit.html.twig', $data);
     }
 
     /**
-     * @Route("/admin/tests/{id}/delete", name="app_admin_delete")
+     * @Route("/test/{id}/delete", name="admin_test_delete")
      */
     public function deleteAction(Request $request, $id)
     {
         /** @var Test $entity */
         $entity = $this->get('core.repository.test')->find($id);
+
         if (null !== $entity) {
             $this->getDoctrine()->getManager()->remove($entity);
             $this->getDoctrine()->getManager()->flush();
@@ -105,6 +109,7 @@ class AdminController extends Controller
         } else {
             $this->get('session')->getFlashBag()->add('danger', "Test #$id introuvable.");
         }
-        return $this->redirectToRoute('app_admin_index');
+
+        return $this->redirectToRoute('admin_test_index');
     }
 }
