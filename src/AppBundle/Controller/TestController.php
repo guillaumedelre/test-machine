@@ -21,7 +21,7 @@ class TestController extends Controller
         if (null === $entity) {
             $this->get('session')->getFlashBag()->add('danger', "Test #$id introuvable.");
 
-            return $this->redirectToRoute('app_admin_index');
+            return $this->redirectToRoute('admin_default_index');
         }
 
         return $this->render('AppBundle:Test:launch.html.twig', array(
