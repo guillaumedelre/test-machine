@@ -10,7 +10,7 @@ use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-class TestController extends FOSRestController implements ClassResourceInterface
+class CategoryController extends FOSRestController implements ClassResourceInterface
 {
     /**
      * Retourne une collection paginée
@@ -18,8 +18,8 @@ class TestController extends FOSRestController implements ClassResourceInterface
      * @ApiDoc(
      *  resource=true,
      *  description="Récupère une collection paginée",
-     *  section="Test",
-     *  output="CoreBundle\Entity\Test",
+     *  section="Category",
+     *  output="CoreBundle\Entity\Category",
      *  statusCodes={
      *      200="Ok",
      *      400="Bad Request",
@@ -39,11 +39,12 @@ class TestController extends FOSRestController implements ClassResourceInterface
         $sort    = $paramFetcher->get('sort');
         $field   = $paramFetcher->get('field');
 
-        $collection = $this->get('core.repository.test')->findBy([], [$field => $sort], $limit, $page * $limit);
+        $collection = $this->get('core.repository.category')->findBy([], [$field => $sort], $limit, $page * $limit);
 
         if(!is_array($collection)) {
             throw $this->createNotFoundException();
         }
+
         return View::create($collection, Codes::HTTP_OK);
     }
 
@@ -53,8 +54,8 @@ class TestController extends FOSRestController implements ClassResourceInterface
      * @ApiDoc(
      *  resource=true,
      *  description="Récupère l'élément dont l'id est passé en paramètre",
-     *  section="Test",
-     *  output="CoreBundle\Entity\Test",
+     *  section="Category",
+     *  output="CoreBundle\Entity\Category",
      *  requirements={
      *      {"name"="id", "dataType"="integer", "required"=true, "description"="Id de l'élément"}
      *  },
@@ -67,7 +68,7 @@ class TestController extends FOSRestController implements ClassResourceInterface
      */
     public function getAction($id)
     {
-        $entity = $this->get('core.repository.test')->find($id);
+        $entity = $this->get('core.repository.category')->find($id);
 
         if(!is_object($entity)) {
             throw $this->createNotFoundException();

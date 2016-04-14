@@ -20,14 +20,16 @@ class CategoryRepository extends AbstractRepository
         $added = 0;
 
         foreach($categories as $key => $category) {
-            $found = $this->findOneByName($category);
+            $entity = $this->findOneByName($category);
 
-            if (null === $found) {
-                $entity = new $this->getClassMetadata();
-                $entity->setName($category);
-                $this->save($entity);
+            if (null === $entity) {
+                $entityName = $this->getClassMetadata()->getName();
+                $entity = new $entityName;
                 $added++;
             }
+
+            $entity->setName($category);
+            $this->save($entity);
         }
 
         return $added;
