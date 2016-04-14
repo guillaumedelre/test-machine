@@ -8,11 +8,11 @@
     </ol>
 
     <div class="text-right">
-        <button type="button" class="btn btn-success" data-title="Nouveau test" data-toggle="modal" data-target="#myModal">
+        <a href="{{ url('app_admin_add') }}" class="btn btn-success">
             <i class="glyphicon glyphicon-plus"></i> Nouveau test
-        </button>
+        </a>
     </div>
-    {{ include("AppBundle:Common:modal.html.twig") }}
+
     {{ include("AppBundle:Default:table.html.twig") }}
     {{ include("AppBundle:Default:pagination.html.twig") }}
 {% endblock %}
