@@ -27,7 +27,7 @@
                         <blockquote>
                             {{ question.question }}
                         </blockquote>
-                        <form class="form" method="post" action="{{ url('app_default_launch') }}">
+                        <form class="form">
                             <div class="form-group">
                                 {% for answer in question.answers %}
                                     <div class="checkbox">

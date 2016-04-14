@@ -12,12 +12,12 @@ class Client
 	 */
 	public function getCategories()
 	{
-		return Loader::getCategories($this->path());
+		return Loader::getCategories($this->getPath());
 	}
 
-	public function launch($number, $categories = [])
+	public function getTest($number, $categories = [])
 	{
-		return Loader::init($number, $categories, $this->path());
+		return Loader::init($number, $categories, $this->getPath());
 	}
 
 	/**
@@ -25,7 +25,7 @@ class Client
 	 */
 	public function count()
 	{
-		return Loader::count($this->path());
+		return Loader::count($this->getPath());
 	}
 
 	/**
@@ -33,7 +33,7 @@ class Client
 	 *
 	 * @return  String       $path      The configuration filepath
 	 */
-	protected function path()
+	public function getPath()
 	{
 		return realpath(dirname(__DIR__).DIRECTORY_SEPARATOR.'../../../app/config/certificationy.yml');
 	}

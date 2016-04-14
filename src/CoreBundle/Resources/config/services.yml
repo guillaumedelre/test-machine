@@ -10,15 +10,25 @@ parameters:
     core.repository.abstract.class: CoreBundle\Entity\Repository\AbstractRepository
     core.repository.test.class: CoreBundle\Entity\Repository\TestRepository
 services:
+    core.service.certificationy:
+        class: CoreBundle\Service\Certificationy\Client
     # repository as services
     core.repository.abstract:
-        class: %core.repository.abstract.class%
+        class: "%core.repository.abstract.class%"
         abstract: true
         factory: ["@doctrine.orm.default_entity_manager", "getRepository"]
     core.repository.test:
-        class: %core.repository.test.class%
+        class: "%core.repository.test.class%"
         parent: core.repository.abstract
         arguments:
-            - %core.entity.test.class%
-    core.service.certificationy:
-      class: CoreBundle\Service\Certificationy\Client
+            - "%core.entity.test.class%"
+    # form handler as services
+    core.form.handler.abstract:
+        class: "%core.form.handler.abstract.class%"
+        abstract: true
+        arguments: [ "@doctrine.orm.default_entity_manager", "@form.factory", "@service_container" ]
+    core.form.handler.test:
+        class: "%core.form.handler.test.class%"
+        parent: core.form.handler.abstract
+        calls:
+                - [ setFormType, ["%core.form.type.test.class%"] ]

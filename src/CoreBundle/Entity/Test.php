@@ -58,6 +58,10 @@ class Test extends AbstractEntity
     private $nbQuestion;
 
     /**
+     * @var array
+     */
+    private $categories;
+    /**
      * @var string
      *
      * @ORM\Column(name="data", type="text", length=65535, nullable=false)
@@ -70,6 +74,13 @@ class Test extends AbstractEntity
      * @ORM\Column(name="started_at", type="datetime", nullable=true)
      */
     protected $startedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="ended_at", type="datetime", nullable=true)
+     */
+    protected $endedAt;
 
     /**
      * @var \DateTime
@@ -183,6 +194,22 @@ class Test extends AbstractEntity
     {
         $this->nbQuestion = $nbQuestion;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param array $categories
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
     }
 
     /**

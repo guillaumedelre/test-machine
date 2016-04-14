@@ -68,7 +68,7 @@ abstract class AbstractFormHandler
         $this->form = $this->formFactory
             ->createBuilder($this->formType, $entity)
             ->setAction($actionUrl)
-            ->add('save', SubmitType::class, array('label_format' => 'Enregistrer', 'attr' => ['class' => "btn btn-default"]))
+            ->add('save', SubmitType::class, array('label_format' => 'Enregistrer', 'attr' => ['class' => "btn btn-success"]))
             ->getForm();
 
         return $this->form;
