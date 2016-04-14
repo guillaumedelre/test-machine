@@ -2,12 +2,12 @@
 
 {% block content %}
     <div id="rootwizard">
-        <div class="navbar" style="visibility: hidden; height: 0px; padding: 0px; margin: 0px;">
+        <div class="navbar">
             <div class="navbar-inner">
                 <div class="container">
                     <ul>
                         {% for i, question in test.questions %}
-                        <li><a href="#tab{{ i }}" data-toggle="tab">Question {{ i }}</a></li>
+                            <li><a href="#tab{{ i }}" data-toggle="tab">{{ test.questions[i].category }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -17,35 +17,37 @@
             <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
         </div>
         <div class="tab-content">
-            {% for i, question in test.questions %}
-            <div class="tab-pane" id="tab{{ i }}">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <span class="badge badge-default">{{ question.category }}</span>
-                    </div>
-                    <div class="panel-body">
-                        <blockquote>
-                            {{ question.question }}
-                        </blockquote>
-                        <form class="form">
-                            <div class="form-group">
-                                {% for answer in question.answers %}
-                                    <div class="checkbox">
-                                        <label>
-                                            {% if question.multipleChoice %}
-                                                <input type="checkbox" name="answers[]" value="{{ answer.value }}"> {{ answer.value }}
-                                            {% else %}
-                                                <input type="radio" name="answers[]" value="{{ answer.value }}"> {{ answer.value }}
-                                            {% endif %}
-                                        </label>
-                                    </div>
-                                {% endfor %}
+            <form id="testForm" class="form-horizontal">
+                {% for i, question in test.questions %}
+                    <div class="tab-pane" id="tab{{ i }}">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <span class="badge badge-default">{{ question.category }}</span>
                             </div>
-                        </form>
+                            <div class="panel-body">
+                                <blockquote>
+                                    {{ question.question }}
+                                </blockquote>
+                                <form class="form">
+                                    <div class="form-group">
+                                        {% for answer in question.answers %}
+                                            <div class="checkbox">
+                                                <label>
+                                                    {% if question.multipleChoice %}
+                                                        <input type="checkbox" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
+                                                    {% else %}
+                                                        <input type="radio" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
+                                                    {% endif %}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            </form>
             <ul class="pager wizard">
                 <li class="previous first" style="display:none;"><a href="#">First</a></li>
                 <li class="previous"><a href="#">Previous</a></li>
@@ -60,14 +62,24 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="http://vinceg.github.io/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
-<script>
-    $(function(){
-        $('#rootwizard').bootstrapWizard({onTabShow: function(tab, navigation, index) {
-            var $total = navigation.find('li').length;
-            var $current = index+1;
-            var $percent = ($current/$total) * 100;
-            $('#rootwizard .progress-bar').css({width:$percent+'%'});
-        }});
-    })
-</script>
+    <script>
+        $(function(){
+            // http://vinceg.github.io/twitter-bootstrap-wizard/examples/validation.html
+            $('#rootwizard').bootstrapWizard({
+                onTabShow: function(tab, navigation, index) {
+                    var $total = navigation.find('li').length;
+                    var $current = index+1;
+                    var $percent = ($current/$total) * 100;
+                    $('#rootwizard .progress-bar').css({width:$percent+'%'});
+                },
+                'onNext': function(tab, navigation, index) {
+                    var $valid = $("#testForm").valid();
+                    if(!$valid) {
+                        $validator.focusInvalid();
+                        return false;
+                    }
+                }
+            });
+        })
+    </script>
 {% endblock %}
