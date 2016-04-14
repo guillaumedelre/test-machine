@@ -3,6 +3,7 @@
         <thead>
         <tr>
             <th>Candidat</th>
+            <th>Catégories</th>
             <th>Statut</th>
             <th class="text-right">Actions</th>
         </tr>
@@ -11,6 +12,7 @@
         {% for test in tests %}
             <tr>
                 <td>{{ test.email }}</td>
+                <td>{{ test.categories|length }}</td>
                 <td>{% if test.startedAt is null %}TODO{% else %}DONE{% endif %}</td>
                 <td class="text-right">
                     <a href="{{ url('app_test_launch', {id: test.id}) }}" target="_blank" data-toggle="tooltip" title="Lancer" class="btn btn-xs btn-default"><i class="glyphicon glyphicon-play"></i></a>

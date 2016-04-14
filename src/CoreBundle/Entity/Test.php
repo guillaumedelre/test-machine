@@ -9,6 +9,7 @@
 namespace CoreBundle\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -58,9 +59,12 @@ class Test extends AbstractEntity
     private $nbQuestion;
 
     /**
-     * @var array
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Category", cascade={"persist"})
      */
     private $categories;
+
     /**
      * @var string
      *
@@ -97,6 +101,14 @@ class Test extends AbstractEntity
      * @ORM\Column(name="updated_at", type="datetime", nullable=false)
      */
     protected $updatedAt;
+
+    /**
+     * Test constructor.
+     */
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     /**
      * @return string
@@ -197,19 +209,32 @@ class Test extends AbstractEntity
     }
 
     /**
-     * @return array
+     * @param Category $category
+     * @return Test
+     */
+    public function addCategory(Category $category)
+    {
+        $this->categories[] = $category;
+
+        return $this;
+    }
+
+    /**
+     * @param Category $category
+     * @return Test
+     */
+    public function removeCategory(Category $category)
+    {
+        $this->categories->removeElement($category);
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
      */
     public function getCategories()
     {
         return $this->categories;
-    }
-
-    /**
-     * @param array $categories
-     */
-    public function setCategories($categories)
-    {
-        $this->categories = $categories;
     }
 
     /**

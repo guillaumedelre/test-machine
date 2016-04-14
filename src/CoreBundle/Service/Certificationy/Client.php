@@ -29,13 +29,23 @@ class Client
 	}
 
 	/**
+	 * @return bool
+	 */
+	function isCli()
+	{
+		return (php_sapi_name() === 'cli');
+	}
+
+	/**
 	 * Returns configuration file path
 	 *
 	 * @return  String       $path      The configuration filepath
 	 */
 	public function getPath()
 	{
-		return realpath(dirname(__DIR__).DIRECTORY_SEPARATOR.'../../../app/config/certificationy.yml');
+		return ($this->isCli())
+			? realpath(dirname(__DIR__).DIRECTORY_SEPARATOR.'../../../app/config/certificationy-cli.yml')
+			: realpath(dirname(__DIR__).DIRECTORY_SEPARATOR.'../../../app/config/certificationy.yml');
 	}
 
 }

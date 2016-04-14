@@ -9,6 +9,7 @@
 namespace CoreBundle\Form\Handler;
 
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -20,16 +21,10 @@ class TestHandler extends AbstractFormHandler
     /**
      * @param $entity
      * @param $actionUrl
-     * @param $categories
      * @return Form
      */
     public function buildForm($entity, $actionUrl = '')
     {
-        $categories = [];
-        foreach($this->container->get('core.service.certificationy')->getCategories() as $id => $value) {
-            $categories[$value] = $value;
-        }
-
         $this->form = $this->formFactory
             ->createBuilder($this->formType, $entity)
             ->setAction($actionUrl)
@@ -41,11 +36,11 @@ class TestHandler extends AbstractFormHandler
                     'value' => 20,
                 ),
             ))
-            ->add('categories', ChoiceType::class, array(
+            ->add('categories', EntityType::class, array(
                 'label'    => 'Catégories',
                 'expanded' => true,
                 'multiple' => true,
-                'choices'  => $categories,
+                'class'    => 'CoreBundle\Entity\Category',
             ))
             ->add('save', SubmitType::class, array('label_format' => 'Enregistrer', 'attr' => ['class' => "btn btn-success"]))
             ->getForm();

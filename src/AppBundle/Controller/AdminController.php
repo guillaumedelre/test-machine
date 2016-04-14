@@ -18,26 +18,6 @@ class AdminController extends Controller
         $limit = $request->query->get('limit', AbstractEntity::DEFAULT_LIMIT_ADMIN);
         $offset = $request->query->get('offset', 0);
 
-        $entity = new Test();
-
-        $this->get('core.form.handler.test')->buildForm($entity);
-
-        if ('POST' === $request->getMethod()) {
-            try {
-                $entity->setData(serialize($this->get('core.service.certificationy')->getTest(
-                    $request->request->get('test', 20)['nbQuestion'],
-                    $request->request->get('test', [])['categories']
-                )));
-                $entity->setToken(crypt($entity->getEmail().time(), 'SHA256'));
-                $this->get('core.form.handler.test')->process($request, $entity);
-                $this->get('session')->getFlashBag()->add('success', 'Le test a bien été enregistré.');
-            } catch (\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-            }
-
-            return $this->redirectToRoute('app_admin_index');
-        }
-
         $data = array(
             'currentPage' => $offset,
             'currentLimit' => $limit,
@@ -59,9 +39,10 @@ class AdminController extends Controller
 
         if ('POST' === $request->getMethod()) {
             try {
+                $categories = $this->get('core.repository.category')->findWhereIdIn($request->request->get('test', [])['categories']);
                 $entity->setData(serialize($this->get('core.service.certificationy')->getTest(
                     $request->request->get('test', 20)['nbQuestion'],
-                    $request->request->get('test', [])['categories']
+                    $categories
                 )));
                 $entity->setToken(crypt($entity->getEmail().time(), 'SHA256'));
                 $this->get('core.form.handler.test')->process($request, $entity);
