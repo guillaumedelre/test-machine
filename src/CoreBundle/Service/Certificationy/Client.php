@@ -78,7 +78,7 @@ class Client
 
 				$results[$key] = array(
 					sprintf('%s', $question->getQuestion()),
-					implode(',', $question->getCorrectAnswersValues()),
+					$question->getCorrectAnswersValues(),
 					$isCorrect
 				);
 			}

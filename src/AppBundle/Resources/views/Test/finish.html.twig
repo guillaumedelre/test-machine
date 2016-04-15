@@ -13,9 +13,13 @@
         <tbody>
         {% for key, result in results %}
             <tr>
-                <td>{{ result[0]|raw }}</td>
+                <td>{{ result[0] }}</td>
                 <td class="{% if (result[2]) %}text-success{% else %}text-danger{% endif %}">{{ answers[key]|join('<br>')|raw }}</td>
-                <td>{{ result[1]|raw }}</td>
+                <td>
+                    {% for res in result[1] %}
+                    {{ res }}<br>
+                    {% endfor %}
+                </td>
             </tr>
         {% endfor %}
         <tr class="active">

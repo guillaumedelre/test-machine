@@ -56,7 +56,7 @@ class Test extends AbstractEntity
      *
      * @ORM\Column(name="nb_questions", type="integer", nullable=false)
      */
-    private $nbQuestion;
+    private $nbQuestions;
 
     /**
      * @var ArrayCollection
@@ -71,6 +71,13 @@ class Test extends AbstractEntity
      * @ORM\Column(name="data", type="text", length=65535, nullable=false)
      */
     private $data;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="scoring", type="integer", nullable=true)
+     */
+    private $scoring;
 
     /**
      * @var \DateTime
@@ -193,18 +200,18 @@ class Test extends AbstractEntity
     /**
      * @return int
      */
-    public function getNbQuestion()
+    public function getNbQuestions()
     {
-        return $this->nbQuestion;
+        return $this->nbQuestions;
     }
 
     /**
-     * @param int $nbQuestion
+     * @param int $nbQuestions
      * @return Test
      */
-    public function setNbQuestion($nbQuestion)
+    public function setNbQuestions($nbQuestions)
     {
-        $this->nbQuestion = $nbQuestion;
+        $this->nbQuestions = $nbQuestions;
         return $this;
     }
 
@@ -252,6 +259,24 @@ class Test extends AbstractEntity
     public function setData($data)
     {
         $this->data = $data;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getScoring()
+    {
+        return $this->scoring;
+    }
+
+    /**
+     * @param int $scoring
+     * @return Test
+     */
+    public function setScoring($scoring)
+    {
+        $this->scoring = $scoring;
         return $this;
     }
 
@@ -323,5 +348,31 @@ class Test extends AbstractEntity
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    /**
+     * @return string|void
+     */
+    public function getTime()
+    {
+        if (null !== $this->getStartedAt() && null !== $this->getEndedAt()) {
+            return $this->getEndedAt()->diff($this->getStartedAt(), true)->format('%i');
+        }
+
+        return;
+    }
+
+    /**
+     * @return float|void
+     */
+    public function getPerformance()
+    {
+        if (null !== $this->getStartedAt() && null !== $this->getEndedAt()) {
+            $spent = (int)$this->getEndedAt()->diff($this->getStartedAt(), true)->format('%s');
+            $plan = $this->getNbMinutes() * 60;
+            return  number_format($spent * 100 / $plan, 1);
+        }
+
+        return;
     }
 }

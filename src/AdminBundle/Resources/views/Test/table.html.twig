@@ -5,6 +5,9 @@
             <th>Candidat</th>
             <th>Catégories</th>
             <th>Statut</th>
+            <th>Score</th>
+            <th>Temps passé</th>
+            <th>Performance</th>
             <th class="text-right">Actions</th>
         </tr>
         </thead>
@@ -14,6 +17,9 @@
                 <td>{{ test.email }}</td>
                 <td>{{ test.categories|length }}</td>
                 <td>{% if test.startedAt is null %}TODO{% else %}DONE{% endif %}</td>
+                <td>{{ test.scoring }}/{{ test.nbQuestions }}</td>
+                <td>{{ test.time }}</td>
+                <td>{{ test.performance }}</td>
                 <td class="text-right">
                     <a href="{{ url('app_test_launch', {id: test.id}) }}" target="_blank" data-toggle="tooltip" title="Lancer" class="btn btn-xs btn-default"><i class="glyphicon glyphicon-play"></i></a>
                     <a href="{{ url('admin_test_edit', {id: test.id}) }}" data-toggle="tooltip" title="Editer" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i></a>

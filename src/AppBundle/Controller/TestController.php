@@ -51,9 +51,6 @@ class TestController extends Controller
             return $this->redirectToRoute('admin_default_index');
         }
 
-        $entity->setEndedAt(new \DateTime());
-        $this->get('core.repository.test')->save($entity);
-
         $results = $this->get('core.service.certificationy')->validate($request, $entity);
 
         $scoring = 0;
@@ -61,6 +58,11 @@ class TestController extends Controller
         foreach($results as $result) {
             $scoring = ($result[2]) ? $scoring + 1 : $scoring;
         }
+
+        $entity->setEndedAt(new \DateTime());
+        $entity->setScoring($scoring);
+        $this->get('core.repository.test')->save($entity);
+
 
         return $this->render('AppBundle:Test:finish.html.twig', array(
             'answers' => $request->request->get('answers'),
