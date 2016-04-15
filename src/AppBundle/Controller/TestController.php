@@ -2,9 +2,9 @@
 
 namespace AppBundle\Controller;
 
-use CoreBundle\Entity\AbstractEntity;
 use CoreBundle\Entity\Test;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,8 +30,37 @@ class TestController extends Controller
         }
 
         return $this->render('AppBundle:Test:launch.html.twig', array(
-            'test' => unserialize($entity->getData()),
+            'test' => $entity,
+            'set' => unserialize($entity->getData()),
             'deadline' => date("Y-m-d H:i:s", strtotime($entity->getStartedAt()->format('Y/m/d H:i:s')) + $entity->getNbMinutes() * 60),
+        ));
+    }
+
+    /**
+     * @Route("/test/{id}/finish", name="app_test_finish")
+     * @Method("POST")
+     */
+    public function finishAction(Request $request, $id)
+    {
+        /** @var Test $entity */
+        $entity = $this->get('core.repository.test')->find($id);
+
+        if (null === $entity) {
+            $this->get('session')->getFlashBag()->add('danger', "Test #$id introuvable.");
+
+            return $this->redirectToRoute('admin_default_index');
+        }
+
+        $entity->setEndedAt(new \DateTime());
+        $this->get('core.repository.test')->save($entity);
+
+        $results = $this->get('core.service.certificationy')->validate($request, $entity);
+
+        return $this->render('AppBundle:Test:finish.html.twig', array(
+            'answers' => $request,
+            'test' => $entity,
+            'set' => unserialize($entity->getData()),
+            'results' => $results,
         ));
     }
 }

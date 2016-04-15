@@ -22,8 +22,8 @@
 
         <div class="col-md-3">
             <div class="list-group">
-                {% for i, question in test.questions %}
-                    <a href="#tab{{ i }}" class="list-group-item" data-id="{{ i }}" role="tab" data-toggle="tab">{{ test.questions[i].category }}</a>
+                {% for i, question in set.questions %}
+                    <a href="#tab{{ i }}" class="list-group-item" data-id="{{ i }}" role="tab" data-toggle="tab">{{ set.questions[i].category }}</a>
                 {% endfor %}
             </div>
         </div>
@@ -31,9 +31,9 @@
         <div class="col-md-9">
 
             <div class="tab-content">
-                <form id="testForm" class="form" method="post">
+                <form id="testForm" class="form" method="post" action="{{ url('app_test_finish', {id: test.id}) }}">
 
-                    {% for i, question in test.questions %}
+                    {% for i, question in set.questions %}
                         <div role="tabpanel" class="tab-pane fade" id="tab{{ i }}">
                             <div class="panel panel-default">
                                 <div class="panel-heading">

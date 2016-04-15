@@ -276,6 +276,22 @@ class Test extends AbstractEntity
     /**
      * @return \DateTime
      */
+    public function getEndedAt()
+    {
+        return $this->endedAt;
+    }
+
+    /**
+     * @param \DateTime $endedAt
+     */
+    public function setEndedAt($endedAt)
+    {
+        $this->endedAt = $endedAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
     public function getCreatedAt()
     {
         return $this->createdAt;
