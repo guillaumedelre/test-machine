@@ -1,83 +1,131 @@
 {% extends "@App/layout.html.twig" %}
 
 {% block content %}
-    <div id="rootwizard">
-        <div class="row">
-            <div class="col-md-3 list-group">
-                {% for i, question in test.questions %}
-                    <a href="#tab{{ i }}"  class="list-group-item" data-id="{{ i }}" data-toggle="tab">{{ test.questions[i].category }}</a>
-                {% endfor %}
-            </div>
-            <div class="col-md-9">
-                <div id="bar" class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
-                </div>
-                <div class="tab-content">
-                    <form id="testForm" class="form-horizontal">
-                        {% for i, question in test.questions %}
-                            <div class="tab-pane" id="tab{{ i }}">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <span class="badge badge-default">{{ question.category }}</span>
-                                    </div>
-                                    <div class="panel-body">
-                                        <blockquote>
-                                            {{ question.question }}
-                                        </blockquote>
-                                        <form class="form">
-                                            <div class="form-group">
-                                                {% for answer in question.answers %}
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            {% if question.multipleChoice %}
-                                                                <input type="checkbox" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
-                                                            {% else %}
-                                                                <input type="radio" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
-                                                            {% endif %}
-                                                        </label>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        </form>
+    <div id="bar" class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-3 list-group">
+            {% for i, question in test.questions %}
+                <a href="#tab{{ i }}" class="list-group-item" data-id="{{ i }}" role="tab" data-toggle="tab">{{ test.questions[i].category }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-9">
+
+            <div class="tab-content">
+                <form id="testForm" class="form">
+
+                    {% for i, question in test.questions %}
+                        <div role="tabpanel" class="tab-pane fade" id="tab{{ i }}">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <span class="badge badge-default">{{ question.category }}</span>
+                                </div>
+                                <div class="panel-body">
+                                    <blockquote>
+                                        {{ question.question }}
+                                    </blockquote>
+                                    <div class="form-group">
+                                        {% for answer in question.answers %}
+                                            {% if question.multipleChoice %}
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
+                                                    </label>
+                                                </div>
+                                            {% else %}
+                                                <div class="radio">
+                                                    <label>
+                                                        <input type="radio" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </form>
-                    <ul class="pager wizard">
-                        <li class="previous"><a href="#">Précédent</a></li>
-                        <li class="next"><a href="#">Suivant</a></li>
-                        <li class="finish pull-right"><a href="javascript:$('#testForm').submit();">Terminé</a></li>
-                    </ul>
-                </div>
+                        </div>
+                    {% endfor %}
+                    <div>
+                        <a href="#" class="btn-prev btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i> Précédent</a>
+                        <a href="#" class="btn-next btn btn-default pull-right">Suivant <i class="glyphicon glyphicon-chevron-right"></i></a>
+                        <a href="#" class="btn-finish btn btn-default pull-right hidden">Terminé</a>
+                    </div>
+
+                </form>
             </div>
+
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="http://vinceg.github.io/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
     <script>
         $(function(){
+            var $totalQuestions = $('.list-group-item').length;
+
+            var $currentQuestionIndex = 0;
+
+            $('.btn-prev').bind('click', function() {
+                if ($currentQuestionIndex > 0) {
+                    showTab($currentQuestionIndex - 1);
+                }
+            });
+            $('.btn-next').bind('click', function() {
+                if ($currentQuestionIndex < $totalQuestions - 1) {
+                    showTab($currentQuestionIndex + 1);
+                }
+            });
+
             $('.list-group-item').bind('click', function(event) {
                 $('.list-group-item').removeClass('active');
                 $(event.target).addClass('active');
             });
 
-            // http://vinceg.github.io/twitter-bootstrap-wizard/examples/validation.html
-            $('#rootwizard').bootstrapWizard({
-                onTabShow: function(tab, navigation, index) {
-                    var $total = navigation.find('li').length;
-                    var $current = index+1;
-                    var $percent = ($current/$total) * 100;
-                    $('#rootwizard .progress-bar').css({width:$percent+'%'});
-                },
-                'onNext': function(tab, navigation, index) {
-                    var $questionId =  tab.find('a').data('id');
-                    return $('#tab' + $questionId + ' input:checked').length > 0
-                }
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var $newActivatedTab = e.target; // newly activated tab
+                var $questionId = $(e.target).data('id');
+                $.each($('a[data-toggle="tab"]'), function(i, el) {
+                    if (el == $newActivatedTab) {
+                        updateCurrentIndex(i);
+                    }
+                });
+                $('.tab-pane').hide();
+                $('#tab' + $questionId).show();
             });
+
+            var updateCurrentIndex = function(value)
+            {
+                $currentQuestionIndex = value;
+                var $percent = ($currentQuestionIndex/$totalQuestions) * 100;
+                $('#bar .progress-bar').css({width:$percent+'%'});
+            };
+
+            var showTab = function(index) {
+                updateCurrentIndex(index);
+
+                $($('.list-group-item').get(index)).trigger('click');
+
+                if (0 == $currentQuestionIndex) {
+                    $('.btn-prev').attr('disabled', 'disabled');
+                } else {
+                    $('.btn-prev').removeAttr('disabled');
+                }
+
+                if ($totalQuestions - 1 == $currentQuestionIndex) {
+                    $('.btn-next').addClass('hidden');
+                    $('.btn-finish').removeClass('hidden');
+                } else {
+                    $('.btn-next').removeClass('hidden');
+                    $('.btn-finish').addClass('hidden');
+                }
+            };
+
+            showTab($currentQuestionIndex);
         })
     </script>
 {% endblock %}
