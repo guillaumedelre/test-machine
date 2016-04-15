@@ -63,23 +63,23 @@ class Client
 	 */
 	public function validate(Request $request, AbstractEntity $test)
 	{
-		$results = array();
-
-		$questionCount = 1;
+		$results = [];
 
 		/** @var Set $set */
 		$set = unserialize($test->getData());
 
 		foreach($set->getQuestions() as $key => $question) {
 			if (array_key_exists($key, $request->request->get('answers'))) {
-				$answers = true === $question->isMultipleChoice() ? $request->request->get('answers')[$key] : array($request->request->get('answers')[$key]);
-				$answer  = true === $question->isMultipleChoice() ? implode(', ', $request->request->get('answers')[$key]) : $request->request->get('answers')[$key];
+
+				$answers = $request->request->get('answers')[$key];
 				$set->setAnswer($key, $answers);
+
 				$isCorrect = $set->isCorrect($key);
-				$results[] = array(
-					sprintf('<comment>#%d</comment> %s', $questionCount++, $question->getQuestion()),
-					implode(', ', $question->getCorrectAnswersValues()),
-					$isCorrect ? '<info>✔</info>' : '<error>✗</error>'
+
+				$results[$key] = array(
+					sprintf('%s', $question->getQuestion()),
+					implode(',', $question->getCorrectAnswersValues()),
+					$isCorrect
 				);
 			}
 		}

@@ -56,10 +56,17 @@ class TestController extends Controller
 
         $results = $this->get('core.service.certificationy')->validate($request, $entity);
 
+        $scoring = 0;
+
+        foreach($results as $result) {
+            $scoring = ($result[2]) ? $scoring + 1 : $scoring;
+        }
+
         return $this->render('AppBundle:Test:finish.html.twig', array(
-            'answers' => $request,
+            'answers' => $request->request->get('answers'),
             'test' => $entity,
             'set' => unserialize($entity->getData()),
+            'scoring' => $scoring,
             'results' => $results,
         ));
     }
