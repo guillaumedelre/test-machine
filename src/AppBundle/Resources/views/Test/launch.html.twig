@@ -2,59 +2,55 @@
 
 {% block content %}
     <div id="rootwizard">
-        <div class="navbar">
-            <div class="navbar-inner">
-                <div class="container">
-                    <ul>
+        <div class="row">
+            <div class="col-md-3 list-group">
+                {% for i, question in test.questions %}
+                    <a href="#tab{{ i }}"  class="list-group-item" data-id="{{ i }}" data-toggle="tab">{{ test.questions[i].category }}</a>
+                {% endfor %}
+            </div>
+            <div class="col-md-9">
+                <div id="bar" class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+                </div>
+                <div class="tab-content">
+                    <form id="testForm" class="form-horizontal">
                         {% for i, question in test.questions %}
-                            <li><a href="#tab{{ i }}" data-toggle="tab">{{ test.questions[i].category }}</a></li>
+                            <div class="tab-pane" id="tab{{ i }}">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <span class="badge badge-default">{{ question.category }}</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <blockquote>
+                                            {{ question.question }}
+                                        </blockquote>
+                                        <form class="form">
+                                            <div class="form-group">
+                                                {% for answer in question.answers %}
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            {% if question.multipleChoice %}
+                                                                <input type="checkbox" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
+                                                            {% else %}
+                                                                <input type="radio" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
+                                                            {% endif %}
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         {% endfor %}
+                    </form>
+                    <ul class="pager wizard">
+                        <li class="previous"><a href="#">Précédent</a></li>
+                        <li class="next"><a href="#">Suivant</a></li>
+                        <li class="finish pull-right"><a href="javascript:$('#testForm').submit();">Terminé</a></li>
                     </ul>
                 </div>
             </div>
-        </div>
-        <div id="bar" class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
-        </div>
-        <div class="tab-content">
-            <form id="testForm" class="form-horizontal">
-                {% for i, question in test.questions %}
-                    <div class="tab-pane" id="tab{{ i }}">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <span class="badge badge-default">{{ question.category }}</span>
-                            </div>
-                            <div class="panel-body">
-                                <blockquote>
-                                    {{ question.question }}
-                                </blockquote>
-                                <form class="form">
-                                    <div class="form-group">
-                                        {% for answer in question.answers %}
-                                            <div class="checkbox">
-                                                <label>
-                                                    {% if question.multipleChoice %}
-                                                        <input type="checkbox" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
-                                                    {% else %}
-                                                        <input type="radio" name="answers[{{ i }}][]" value="{{ answer.value }}"> {{ answer.value }}
-                                                    {% endif %}
-                                                </label>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </form>
-            <ul class="pager wizard">
-                <li class="previous first" style="display:none;"><a href="#">First</a></li>
-                <li class="previous"><a href="#">Previous</a></li>
-                <li class="next last" style="display:none;"><a href="#">Last</a></li>
-                <li class="next"><a href="#">Next</a></li>
-                <li class="finish pull-right"><a href="javascript:;">Finish</a></li>
-            </ul>
         </div>
     </div>
 {% endblock %}
@@ -64,6 +60,11 @@
     <script src="http://vinceg.github.io/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
     <script>
         $(function(){
+            $('.list-group-item').bind('click', function(event) {
+                $('.list-group-item').removeClass('active');
+                $(event.target).addClass('active');
+            });
+
             // http://vinceg.github.io/twitter-bootstrap-wizard/examples/validation.html
             $('#rootwizard').bootstrapWizard({
                 onTabShow: function(tab, navigation, index) {
@@ -73,11 +74,8 @@
                     $('#rootwizard .progress-bar').css({width:$percent+'%'});
                 },
                 'onNext': function(tab, navigation, index) {
-                    var $valid = $("#testForm").valid();
-                    if(!$valid) {
-                        $validator.focusInvalid();
-                        return false;
-                    }
+                    var $questionId =  tab.find('a').data('id');
+                    return $('#tab' + $questionId + ' input:checked').length > 0
                 }
             });
         })
