@@ -24,8 +24,14 @@ class TestController extends Controller
             return $this->redirectToRoute('admin_default_index');
         }
 
+        if (null === $entity->getStartedAt()) {
+            $entity->setStartedAt(new \DateTime());
+            $this->get('core.repository.test')->save($entity);
+        }
+
         return $this->render('AppBundle:Test:launch.html.twig', array(
             'test' => unserialize($entity->getData()),
+            'deadline' => date("Y-m-d H:i:s", strtotime($entity->getStartedAt()->format('Y/m/d H:i:s')) + $entity->getNbMinutes() * 60),
         ));
     }
 }
