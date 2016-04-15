@@ -16,7 +16,7 @@
         <div class="col-md-9">
 
             <div class="tab-content">
-                <form id="testForm" class="form">
+                <form id="testForm" class="form" method="post">
 
                     {% for i, question in test.questions %}
                         <div role="tabpanel" class="tab-pane fade" id="tab{{ i }}">
@@ -53,7 +53,7 @@
                     <div>
                         <a href="#" class="btn-prev btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i> Précédent</a>
                         <a href="#" class="btn-next btn btn-default pull-right">Suivant <i class="glyphicon glyphicon-chevron-right"></i></a>
-                        <a href="#" class="btn-finish btn btn-default pull-right hidden">Terminé</a>
+                        <a href="#" class="btn-finish btn btn-primary pull-right hidden">Terminé</a>
                     </div>
 
                 </form>
@@ -90,6 +90,10 @@
                         showAlert($currentQuestionIndex);
                     }
                 }
+            });
+
+            $('.btn-finish').bind('click', function() {
+                $('#testForm').submit();
             });
 
             var showAlert = function($currentQuestionIndex)
