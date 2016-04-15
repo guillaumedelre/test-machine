@@ -25,6 +25,7 @@
                                     <span class="badge badge-default">{{ question.category }}</span>
                                 </div>
                                 <div class="panel-body">
+                                    <div id="alertBox{{ i }}"></div>
                                     <blockquote>
                                         {{ question.question }}
                                     </blockquote>
@@ -66,6 +67,12 @@
     {{ parent() }}
     <script>
         $(function(){
+            var isTabValid = function(index)
+            {
+                var $tab = $('#tab' + $($('.list-group-item').get(index)).data('id'));
+                return $tab.find('input:checked').length > 0;
+            };
+
             var $totalQuestions = $('.list-group-item').length;
 
             var $currentQuestionIndex = 0;
@@ -77,9 +84,22 @@
             });
             $('.btn-next').bind('click', function() {
                 if ($currentQuestionIndex < $totalQuestions - 1) {
-                    showTab($currentQuestionIndex + 1);
+                    if (isTabValid($currentQuestionIndex)) {
+                        showTab($currentQuestionIndex + 1);
+                    } else {
+                        showAlert($currentQuestionIndex);
+                    }
                 }
             });
+
+            var showAlert = function($currentQuestionIndex)
+            {
+                var message = '<div class="alert alert-warning alert-dismissible" role="alert">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                        '<strong>Attention!</strong> Merci de sélectionner votre réponse.</div>';
+
+                $('#alertBox' + $($('.list-group-item').get($currentQuestionIndex)).data('id')).html(message);
+            };
 
             $('.list-group-item').bind('click', function(event) {
                 $('.list-group-item').removeClass('active');
@@ -103,13 +123,6 @@
                 $currentQuestionIndex = value;
                 var $percent = ($currentQuestionIndex/$totalQuestions) * 100;
                 $('#bar .progress-bar').css({width:$percent+'%'});
-            };
-
-            var showTab = function(index) {
-                updateCurrentIndex(index);
-
-                $($('.list-group-item').get(index)).trigger('click');
-
                 if (0 == $currentQuestionIndex) {
                     $('.btn-prev').attr('disabled', 'disabled');
                 } else {
@@ -123,6 +136,13 @@
                     $('.btn-next').removeClass('hidden');
                     $('.btn-finish').addClass('hidden');
                 }
+            };
+
+            var showTab = function(index) {
+                updateCurrentIndex(index);
+
+                $($('.list-group-item').get(index)).trigger('click');
+
             };
 
             showTab($currentQuestionIndex);
